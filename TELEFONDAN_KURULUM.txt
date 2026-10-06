@@ -1,0 +1,21 @@
+ST SATIS TAKIP - ANDROID TELEFONDAN CLOUDFLARE KURULUMU
+
+Bu paket Cloudflare Pages Direct Upload icindir. Terminal / bilgisayar gerekmez.
+
+1) Cloudflare hesabina gir.
+2) D1 veritabani olustur: st-satis-takip-db
+3) Workers & Pages > Create application > Get started > Drag and drop files.
+4) Bu ZIP dosyasini yukle. Proje adi: st-satis-takip
+5) Proje > Settings > Bindings > Add > D1 database binding
+   Variable name: DB
+   Database: st-satis-takip-db
+6) Settings > Variables and Secrets bolumunde iki SECRET ekle:
+   APP_PASSWORD = siteye giris sifren
+   SESSION_SECRET = uzun ve rastgele 40-60+ karakterlik farkli bir deger
+7) Binding/secret degisikliklerinden sonra ayni ZIP ile yeni deployment yap.
+8) Verilen pages.dev adresini ac ve APP_PASSWORD ile giris yap.
+9) Excel fiyat listesini yukle. Veriler D1'de ortak olarak saklanir.
+10) Android Chrome > uc nokta > Ana ekrana ekle / Uygulamayi yukle.
+
+NOT: DB binding adinin tam olarak DB olmasi gerekir.
+APP_PASSWORD ve SESSION_SECRET de tam olarak bu adlarla kaydedilmelidir.

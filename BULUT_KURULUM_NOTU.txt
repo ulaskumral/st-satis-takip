@@ -1,0 +1,17 @@
+ST Satış Takip - Bulut dönüşüm paketi
+
+Mevcut uygulama korunmuştur.
+Bir sonraki teknik adım Firebase/Supabase bağlantısını eklemektir.
+
+Mevcut sürüm:
+- Excel ürün aktarımı
+- Satış takip
+- PWA kurulum
+- Yerel kayıt
+
+Bulut sürümünde:
+- Ortak veritabanı
+- Cihazlar arası senkronizasyon
+- Kullanıcı girişi
+- Belge fotoğrafından satış ekleme
+özellikleri eklenecektir.

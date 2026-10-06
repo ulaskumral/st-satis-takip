@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ST Satış">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Satış Takip</title>
+<style>:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  color: #171719;
+  background: #f5f5f7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-subtle: #fafafa;
+  --text: #171719;
+  --muted: #727277;
+  --faint: #9b9ba1;
+  --line: #e6e6e8;
+  --line-strong: #d8d8dc;
+  --accent: #0b6ff2;
+  --accent-soft: #eef5ff;
+  --danger: #b42318;
+  --control: #19191b;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --content-width: 1120px;
+  --bottom-nav-height: 66px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111214;
+  --surface: #1a1b1e;
+  --surface-subtle: #151619;
+  --text: #f3f3f4;
+  --muted: #a5a5ab;
+  --faint: #7f8088;
+  --line: #2d2f34;
+  --line-strong: #3a3d43;
+  --accent: #6aa8ff;
+  --accent-soft: #17243a;
+  --danger: #ff8d84;
+  --control: #f1f1f3;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--bg); color: var(--text); }
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible { outline: 3px solid rgba(11, 111, 242, .18); outline-offset: 2px; }
+.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+
+.content-width { width: min(100% - 32px, var(--content-width)); margin-inline: auto; }
+.app-shell { min-height: 100vh; padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 24px); }
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(245, 245, 247, .96);
+  border-bottom: 1px solid rgba(216, 216, 220, .8);
+  backdrop-filter: saturate(160%) blur(14px);
+}
+.app-header { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.header-brand { display: flex; min-width: 0; align-items: center; gap: 10px; }
+.header-brand > div { min-width: 0; display: grid; gap: 2px; }
+.header-brand strong { font-size: 14px; line-height: 1.2; letter-spacing: -.01em; }
+.header-brand span:not(.mini-brand) { max-width: min(52vw, 460px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 11px; }
+.mini-brand, .brand-mark { display: grid; place-items: center; background: #1d1d1f; color: white; font-weight: 760; letter-spacing: -.05em; }
+.mini-brand { width: 30px; height: 30px; border-radius: 8px; font-size: 11px; }
+.brand-mark { width: 44px; height: 44px; border-radius: 10px; font-size: 15px; }
+.text-button { border: 0; background: transparent; color: var(--accent); font-size: 13px; font-weight: 650; padding: 10px 4px; cursor: pointer; white-space: nowrap; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.sync-pill { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface); font-size: 10px; font-weight: 700; white-space: nowrap; }
+.sync-pill[data-status="synced"] { color: #18794e; border-color: #cfe8dc; background: #f3fbf7; }
+.sync-pill[data-status="syncing"] { color: #7a5d00; border-color: #eadca8; background: #fffbea; }
+.sync-pill[data-status="offline"], .sync-pill[data-status="error"] { color: var(--danger); border-color: #f1d5d1; background: #fff8f7; }
+.login-shell { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 28px 18px; background: var(--bg); }
+.login-card { width: min(100%, 430px); padding: 30px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 12px 36px rgba(0,0,0,.055); }
+.login-card h1 { margin: 24px 0 8px; font-size: 28px; letter-spacing: -.04em; }
+.login-card p { margin: 0 0 22px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.login-form { display: grid; gap: 12px; }
+.login-input { width: 100%; min-height: 46px; padding: 0 13px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); color: var(--text); }
+.login-error { margin: 0; color: var(--danger); font-size: 12px; }
+.boot-shell { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; color: var(--muted); font-size: 13px; }
+.settings-note { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.settings-logout { width: 100%; margin-top: 9px; min-height: 40px; border: 0; background: transparent; color: var(--danger); font-size: 12px; font-weight: 700; cursor: pointer; }
+:root[data-theme="dark"] .sync-pill[data-status="synced"] { color: #8ed6b3; border-color: #28543e; background: #14251d; }
+:root[data-theme="dark"] .sync-pill[data-status="syncing"] { color: #e4cd76; border-color: #594b20; background: #292311; }
+:root[data-theme="dark"] .sync-pill[data-status="offline"], :root[data-theme="dark"] .sync-pill[data-status="error"] { background: #291816; border-color: #5b2d29; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 14px 0 14px; }
+.summary-grid-single { grid-template-columns: 1fr; }
+.summary-item { min-width: 0; display: grid; align-content: stretch; }
+.summary-card { display: grid; align-content: center; min-height: 82px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, white 4%), var(--surface)); box-shadow: 0 10px 24px rgba(17,17,19,.04); gap: 7px; }
+.summary-label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.summary-value { font-size: clamp(21px, 2.5vw, 30px); line-height: 1.02; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.summary-value small { font-size: .48em; color: var(--muted); letter-spacing: 0; font-weight: 650; }
+.summary-money { white-space: nowrap; }
+.summary-meta { color: var(--faint); font-size: 10.5px; line-height: 1.25; }
+.summary-action { width: 100%; border: 0; background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.summary-action:hover .summary-card { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); box-shadow: 0 12px 28px rgba(17,17,19,.06); }
+.summary-action:active { transform: scale(.992); }
+.summary-target-value { color: var(--accent); }
+
+.detail-dialog { width: min(100%, 620px); max-height: min(82dvh, 760px); display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); color: var(--text); box-shadow: 0 18px 60px rgba(0,0,0,.16); }
+.detail-dialog-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
+.detail-dialog-header h2 { margin: 0; font-size: 20px; letter-spacing: -.03em; }
+.detail-dialog-header p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.detail-close { width: 34px; height: 34px; flex: 0 0 auto; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 24px; line-height: 1; cursor: pointer; }
+.detail-toolbar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 20px; border-bottom: 1px solid var(--line); background: var(--surface-subtle); }
+.detail-total { color: var(--muted); font-size: 11px; font-weight: 650; }
+.sort-button { min-height: 34px; padding: 0 11px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 11px; font-weight: 700; cursor: pointer; }
+.sort-menu { position: absolute; top: calc(100% - 5px); right: 20px; z-index: 4; width: min(230px, calc(100vw - 64px)); padding: 6px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: 0 12px 30px rgba(0,0,0,.14); }
+.sort-menu button { width: 100%; min-height: 38px; padding: 0 10px; border: 0; border-radius: 7px; background: transparent; color: var(--text); text-align: left; font-size: 12px; cursor: pointer; }
+.sort-menu button:hover, .sort-menu button.is-active { background: var(--accent-soft); color: var(--accent); }
+.sales-detail-list { min-height: 0; overflow: auto; padding: 0 20px 12px; }
+.sales-detail-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.sales-detail-row:last-child { border-bottom: 0; }
+.sales-detail-product { min-width: 0; }
+.sales-detail-product strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.sales-detail-product span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sales-detail-values { text-align: right; font-variant-numeric: tabular-nums; }
+.sales-detail-values strong { display: block; font-size: 13px; }
+.sales-detail-values span { display: block; margin-top: 3px; color: var(--muted); font-size: 10.5px; }
+.detail-empty { padding: 40px 12px; text-align: center; color: var(--muted); font-size: 12px; }
+.target-dialog { width: min(100%, 430px); padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 18px 60px rgba(0,0,0,.16); }
+.target-dialog h2 { margin: 0; font-size: 20px; letter-spacing: -.03em; }
+.target-dialog p { margin: 8px 0 18px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.target-field { display: grid; gap: 7px; margin-bottom: 18px; }
+.target-field span { color: var(--muted); font-size: 11px; font-weight: 700; }
+.target-input-wrap { display: grid; grid-template-columns: 1fr auto; align-items: center; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); overflow: hidden; }
+.target-input { width: 100%; min-height: 46px; padding: 0 12px; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 16px; font-variant-numeric: tabular-nums; }
+.target-currency { padding-right: 12px; color: var(--muted); font-size: 12px; font-weight: 700; }
+.target-current { margin: -8px 0 18px !important; font-size: 11px !important; }
+
+.search-bar { position: relative; display: flex; align-items: center; height: 42px; margin-bottom: 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); transition: border-color 120ms ease, box-shadow 120ms ease; }
+.search-bar:focus-within { border-color: #b7cce9; box-shadow: 0 0 0 3px rgba(11, 111, 242, .06); }
+.search-bar input { width: 100%; height: 100%; border: 0; outline: 0; background: transparent; color: var(--text); padding: 0 42px 0 38px; font-size: 14px; }
+.search-bar input::placeholder { color: #9a9aa0; }
+.search-icon { position: absolute; left: 12px; width: 17px; height: 17px; color: var(--muted); }
+.search-clear { position: absolute; right: 5px; width: 32px; height: 32px; border: 0; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; }
+
+.main-content { padding-top: 20px; }
+.notice { margin: 0 0 16px; padding: 10px 12px; border: 1px solid #dce8f8; background: #f5f9ff; border-radius: var(--radius-sm); color: #355272; font-size: 12px; line-height: 1.45; }
+.notice-error { border-color: #f1d5d1; background: #fff8f7; color: var(--danger); }
+.sections-stack { display: grid; gap: 24px; }
+.list-group { min-width: 0; }
+.section-kicker-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+.section-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.section-kicker-row h2 { margin: 0; font-size: 12px; letter-spacing: .075em; text-transform: uppercase; color: #4d4d52; }
+.section-kicker-row span { color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+.filter-chip-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 13px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .01em; cursor: pointer; transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease, transform 120ms ease; }
+.filter-chip:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 22%, var(--line-strong)); }
+.filter-chip:active { transform: scale(.98); }
+.filter-chip.is-active { border-color: color-mix(in srgb, var(--accent) 34%, var(--line-strong)); background: var(--accent-soft); color: var(--accent); }
+.category-section + .category-section { margin-top: 24px; }
+.category-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-height: 30px; border-bottom: 1px solid var(--line-strong); }
+.category-header h3 { margin: 0 0 9px; font-size: 16px; letter-spacing: -.02em; }
+.category-header span { color: var(--muted); font-size: 11px; }
+.product-table { background: var(--surface); }
+
+.product-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; align-items: center; min-height: 76px; border-bottom: 1px solid var(--line); transition: background-color 100ms ease; }
+.product-row:hover { background: #fcfcfd; }
+.product-actions { display: flex; gap: 3px; padding-left: 2px; }
+.icon-button { width: 34px; height: 40px; display: grid; place-items: center; border: 0; background: transparent; color: #a1a1a7; border-radius: 8px; cursor: pointer; transition: color 110ms ease, background-color 110ms ease, transform 110ms ease; }
+.icon-button svg { width: 19px; height: 19px; }
+.icon-button:hover { color: #54545a; background: #f3f3f5; }
+.icon-button:active { transform: scale(.95); }
+.icon-button.is-active { color: var(--accent); }
+.product-main { min-width: 0; padding: 12px 18px 12px 4px; }
+.product-title-line { display: flex; align-items: baseline; gap: 10px; }
+.product-model { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 1.3; letter-spacing: -.01em; }
+.product-price { margin-left: auto; color: #36363a; font-size: 12px; font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.product-description { margin: 4px 0 0; max-width: 760px; color: var(--muted); font-size: 11.5px; line-height: 1.38; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+
+.quantity-control { display: grid; grid-template-columns: 44px 46px 48px; align-items: center; margin-right: 2px; border: 1px solid var(--line-strong); border-radius: 10px; overflow: hidden; background: white; }
+.quantity-button { height: 44px; border: 0; background: white; color: #29292d; font-size: 24px; font-weight: 420; cursor: pointer; transition: background-color 100ms ease, transform 100ms ease, color 100ms ease; }
+.quantity-button:active:not(:disabled) { transform: scale(.95); }
+.quantity-button:hover:not(:disabled) { background: #f5f5f6; }
+.quantity-button:disabled { color: #c9c9ce; cursor: default; }
+.quantity-plus { height: 46px; margin: -1px; background: var(--control); color: white; font-weight: 500; }
+.quantity-plus:hover:not(:disabled) { background: #303034; }
+.quantity-value { display: grid; place-items: center; min-width: 0; height: 44px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); font-size: 15px; font-weight: 730; font-variant-numeric: tabular-nums; }
+.empty-inline { padding: 54px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+
+.bottom-nav { position: fixed; inset: auto 0 0; z-index: 40; min-height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: rgba(250, 250, 251, .97); border-top: 1px solid var(--line-strong); backdrop-filter: saturate(160%) blur(16px); }
+.bottom-nav-inner { width: min(100%, 560px); min-height: var(--bottom-nav-height); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; }
+.bottom-nav button { position: relative; display: grid; place-content: center; justify-items: center; gap: 3px; border: 0; background: transparent; color: #8a8a90; font-size: 11px; font-weight: 650; cursor: pointer; }
+.bottom-nav button::before { content: ''; position: absolute; top: 0; left: 24%; right: 24%; height: 2px; background: transparent; }
+.bottom-nav button svg { width: 22px; height: 22px; }
+.bottom-nav button.is-active { color: var(--accent); }
+.bottom-nav button.is-active::before { background: var(--accent); }
+
+.upload-shell { min-height: 100vh; display: grid; place-items: center; padding: 28px 18px; background: var(--bg); }
+.upload-card { width: min(100%, 620px); padding: 34px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 12px 36px rgba(0, 0, 0, .045); }
+.upload-copy { margin: 26px 0 24px; }
+.eyebrow { margin: 0 0 8px; color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .12em; }
+.upload-copy h1 { max-width: 520px; margin: 0; font-size: clamp(26px, 5vw, 38px); line-height: 1.07; letter-spacing: -.045em; }
+.upload-copy p:not(.eyebrow) { max-width: 500px; margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.drop-zone { display: grid; justify-items: start; gap: 14px; padding: 24px; border: 1px dashed #cfcfd4; border-radius: 12px; background: #fbfbfc; transition: border-color 120ms ease, background-color 120ms ease; }
+.drop-zone.is-dragging { border-color: var(--accent); background: var(--accent-soft); }
+.drop-icon { width: 24px; height: 24px; color: #55555a; }
+.drop-zone > div { display: grid; gap: 4px; }
+.drop-zone strong { font-size: 14px; }
+.drop-zone span { color: var(--muted); font-size: 12px; }
+.primary-button, .secondary-button { min-height: 42px; padding: 0 16px; border-radius: 9px; font-weight: 680; font-size: 13px; cursor: pointer; transition: transform 100ms ease, background-color 100ms ease; }
+.primary-button { border: 1px solid #1b1b1e; background: #1b1b1e; color: white; }
+.primary-button:hover:not(:disabled) { background: #303034; }
+.primary-button:active:not(:disabled), .secondary-button:active { transform: scale(.98); }
+.primary-button:disabled { opacity: .55; cursor: wait; }
+.secondary-button { border: 1px solid var(--line-strong); background: white; color: var(--text); }
+.form-error { margin: 14px 0 0; color: var(--danger); font-size: 12px; line-height: 1.45; }
+
+.dialog-backdrop { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; background: rgba(17, 17, 19, .32); backdrop-filter: blur(4px); }
+.confirm-dialog { width: min(100%, 420px); padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: white; box-shadow: 0 18px 60px rgba(0, 0, 0, .12); }
+.confirm-dialog h2 { margin: 0; font-size: 20px; letter-spacing: -.03em; }
+.confirm-dialog p { margin: 10px 0 22px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+.brand-menu-button { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: #1d1d1f; color: white; font-weight: 760; letter-spacing: -.05em; font-size: 11px; cursor: pointer; }
+.brand-menu-button:active { transform: scale(.96); }
+.settings-backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(17, 17, 19, .28); backdrop-filter: blur(3px); }
+.settings-panel { position: absolute; top: 72px; left: max(16px, calc((100vw - min(100% - 32px, var(--content-width))) / 2)); width: min(360px, calc(100vw - 32px)); padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 18px 60px rgba(0, 0, 0, .18); }
+.settings-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.settings-header h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; }
+.settings-close { width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 22px; cursor: pointer; }
+.settings-section + .settings-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.settings-label { display: block; margin-bottom: 9px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase; }
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.theme-choice { min-height: 78px; padding: 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface-subtle); color: var(--text); cursor: pointer; text-align: left; }
+.theme-choice.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 16%, transparent); }
+.theme-preview { display: grid; grid-template-columns: 10px 1fr; gap: 7px; height: 34px; margin-bottom: 8px; padding: 7px; border: 1px solid rgba(127,128,136,.35); border-radius: 7px; }
+.theme-preview-light { background: #f5f5f7; }
+.theme-preview-dark { background: #111214; }
+.theme-preview::before { content: ''; border-radius: 3px; background: #8d8e94; }
+.theme-preview::after { content: ''; border-radius: 3px; background: rgba(127,128,136,.35); }
+.theme-choice strong { font-size: 12px; }
+.settings-primary { width: 100%; min-height: 44px; border: 1px solid var(--control); border-radius: 9px; background: var(--control); color: var(--surface); font-weight: 700; cursor: pointer; }
+.settings-danger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 9px; }
+.settings-secondary { min-height: 42px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); color: var(--text); font-size: 12px; font-weight: 680; cursor: pointer; }
+
+:root[data-theme="dark"] .sticky-top { background: rgba(17, 18, 20, .96); border-bottom-color: var(--line-strong); }
+:root[data-theme="dark"] .product-row:hover { background: #202125; }
+:root[data-theme="dark"] .summary-card { box-shadow: 0 14px 30px rgba(0,0,0,.18); }
+:root[data-theme="dark"] .section-kicker-row h2, :root[data-theme="dark"] .product-price { color: #d7d7db; }
+:root[data-theme="dark"] .filter-chip { background: var(--surface-subtle); color: var(--muted); }
+:root[data-theme="dark"] .filter-chip.is-active { color: var(--accent); background: #17243a; border-color: #3f5e8c; }
+:root[data-theme="dark"] .quantity-control, :root[data-theme="dark"] .quantity-button { background: var(--surface); color: var(--text); }
+:root[data-theme="dark"] .quantity-button:hover:not(:disabled) { background: #24262b; }
+:root[data-theme="dark"] .quantity-plus { background: #ececef; color: #16171a; }
+:root[data-theme="dark"] .quantity-plus:hover:not(:disabled) { background: #ffffff; }
+:root[data-theme="dark"] .bottom-nav { background: rgba(21, 22, 25, .97); }
+:root[data-theme="dark"] .drop-zone { background: #151619; border-color: var(--line-strong); }
+:root[data-theme="dark"] .secondary-button, :root[data-theme="dark"] .confirm-dialog { background: var(--surface); color: var(--text); }
+:root[data-theme="dark"] .notice { background: #152033; border-color: #263d61; color: #b9d4f8; }
+:root[data-theme="dark"] .notice-error { background: #291816; border-color: #5b2d29; color: #ffaaa3; }
+
+@media (max-width: 680px) {
+  .content-width { width: min(100% - 24px, var(--content-width)); }
+  .app-header { min-height: 56px; }
+  .header-brand span:not(.mini-brand) { max-width: 46vw; }
+  .summary-grid { padding-top: 11px; padding-bottom: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .summary-card { min-height: 78px; padding: 12px 11px; border-radius: 14px; }
+  .summary-label { font-size: 9.5px; line-height: 1.18; }
+  .summary-value { font-size: 18px; }
+  .summary-money { font-size: 17px; }
+  .summary-meta { font-size: 10px; }
+  .detail-dialog { max-height: 86dvh; }
+  .detail-dialog-header { padding: 17px 16px 12px; }
+  .detail-toolbar { padding: 10px 16px; }
+  .sort-menu { right: 16px; }
+  .sales-detail-list { padding-inline: 16px; }
+  .search-bar { margin-bottom: 9px; height: 40px; }
+  .main-content { padding-top: 15px; }
+  .product-row { grid-template-columns: 62px minmax(0, 1fr) auto; min-height: 72px; }
+  .product-actions { gap: 0; }
+  .icon-button { width: 30px; height: 42px; }
+  .icon-button svg { width: 18px; height: 18px; }
+  .product-main { padding: 10px 9px 10px 2px; }
+  .product-title-line { display: grid; gap: 3px; }
+  .product-price { margin-left: 0; font-size: 11px; }
+  .product-description { -webkit-line-clamp: 1; font-size: 10.5px; }
+  .quantity-control { grid-template-columns: 43px 38px 47px; }
+  .quantity-button, .quantity-value { height: 46px; }
+  .quantity-plus { height: 48px; }
+  .upload-card { padding: 24px 20px; border-radius: 12px; }
+  .drop-zone { padding: 20px; }
+  .drop-zone .primary-button { width: 100%; }
+  .settings-panel { top: 64px; left: 12px; width: calc(100vw - 24px); }
+}
+
+@media (max-width: 430px) {
+  .text-button { font-size: 12px; }
+  .summary-card { min-height: 76px; }
+  .filter-chip-row { width: 100%; }
+  .filter-chip { flex: 1 1 auto; }
+  .product-row { grid-template-columns: 58px minmax(0, 1fr) auto; }
+  .quantity-control { grid-template-columns: 40px 34px 44px; }
+  .quantity-button { font-size: 23px; }
+  .quantity-value { font-size: 14px; }
+  .product-model { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+
+.drop-icon svg, .search-bar > svg { width: 100%; height: 100%; }
+.search-bar > svg { width: 18px; height: 18px; color: var(--muted); flex: 0 0 auto; }
+.search-clear.is-hidden { visibility: hidden; pointer-events: none; }
+#notice-area:empty { display: none; }
+@supports not (backdrop-filter: blur(1px)) {
+  .sticky-top, .bottom-nav { background: #f5f5f7; }
+}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+window.ST_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDU9l9HDglprwgU-LR6-KM0uRxg2WRojDU",
+  authDomain: "satis-47466.firebaseapp.com",
+  projectId: "satis-47466",
+  storageBucket: "satis-47466.firebasestorage.app",
+  messagingSenderId: "42904665475",
+  appId: "1:42904665475:web:69f923016d998548694ab6"
+};
+try {
+  firebase.initializeApp(window.ST_FIREBASE_CONFIG);
+  window.ST_DB = firebase.firestore();
+} catch(e) { console.error(e); }
+</script>
+</head>
+<body>
+<div id="app"></div>
+<script>(() => {
+  'use strict';
+
+  const STATE_KEY = 'sales-tracker:standalone:state:v1';
+  const PREF_KEY = 'sales-tracker:standalone:preferences:v1';
+  const WHITE_ORDER = ['Buzdolabı', 'Çamaşır Makinesi', 'Bulaşık Makinesi', 'Kurutma Makinesi', 'Diğer'];
+  const BUILT_ORDER = ['Fırın', 'Ocak', 'Davlumbaz', 'Diğer'];
+  const MODEL_HEADERS = ['MODEL', 'MODEL KODU', 'MODEL NO', 'URUN KODU', 'MALZEME', 'MALZEME NO', 'URUN'];
+  const PRICE_HEADERS = ['PESIN FIYAT', 'PERAKENDE FIYAT', 'SATIS FIYATI', 'TAVSIYE EDILEN FIYAT', 'FIYAT'];
+  const DESCRIPTION_HEADERS = ['ACIKLAMA', 'URUN OZELLIKLERI', 'OZELLIK', 'URUN ADI', 'MODEL ACIKLAMASI'];
+  const CATEGORY_HEADERS = ['KATEGORI', 'URUN GRUBU', 'URUN GRUP', 'GRUP'];
+  const PENALIZED_PRICE_HEADERS = ['PESINAT', 'TAKSIT', 'TOPLAM FIYAT', 'AYLIK'];
+  const MAX_COLUMN_SCAN = 20;
+  const MAX_HEADER_SCAN_ROWS = 90;
+
+  const TURKISH_MAP = {
+    'Ç':'C','Ğ':'G','İ':'I','I':'I','Ö':'O','Ş':'S','Ü':'U',
+    'ç':'C','ğ':'G','ı':'I','i':'I','ö':'O','ş':'S','ü':'U'
+  };
+  const HEADER_BLACKLIST = new Set([
+    'URUN','URUNLER','URUN KODU','MODEL','MODEL KODU','ACIKLAMA',
+    'BOSCH','SIEMENS','PROFILO','FIYAT','PESIN FIYAT'
+  ]);
+  const UNRELATED_SECTION_TERMS = [
+    'ELEKTRIKLI SUPUR','ROBOT SUPUR','DIK SARJLI SUPUR','TOZ TORBA',
+    'KUCUK EV ALETLERI','YIYECEK HAZIRLAMA','MUTFAK MAKIN','AIR FRYER',
+    'BLEND','MIKSER','CHOPPER','NARENCIYE','KIYMA','SU ISIT','CAY MAK',
+    'UTU','SAC BAKIM','HAVA TEMIZ','SU ARIT','SU SEBIL','BATARYA','AKSESUAR'
+  ];
+
+  const icons = {
+    star: (filled=false) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.6 2.56 5.2 5.74.83-4.15 4.05.98 5.72L12 16.7 6.87 19.4l.98-5.72L3.7 9.63l5.74-.83L12 3.6Z" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/></svg>`,
+    trophy: (filled=false) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3.6c0 3.1-1.65 5.4-4 5.4s-4-2.3-4-5.4V4Z" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 6H5.5v1.2c0 2.2 1.2 3.7 3.2 4.1M16 6h2.5v1.2c0 2.2-1.2 3.7-3.2 4.1M12 13v3.6M9.2 20h5.6M10 16.6h4V20h-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    search: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m15.4 15.4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+    upload: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8.5 7.5M12 4l3.5 3.5M5 13.5v4A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    fridge: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M10 6.5v1.7M10 13.2v2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`,
+    oven: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 9h16M8 6.5h.01M11 6.5h.01M14 6.5h.01M8 12h8v5H8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  };
+
+  const app = document.getElementById('app');
+  let persistTimer = null;
+  let noticeTimer = null;
+  let remoteRevision = 0;
+  let remoteSaveInFlight = false;
+  let remoteSaveQueued = false;
+  let isAuthenticated = false;
+  let remoteReady = false;
+  let state = {
+    products: [],
+    sourceMeta: null,
+    activeTab: 'white_goods',
+    preferences: loadPreferences(),
+    query: '',
+    error: '',
+    notice: '',
+    isLoading: false,
+    targetRevenueCents: null,
+    listFilters: {favorites:false,trophies:false}
+  };
+
+  const stored = loadState();
+  if (stored) {
+    state.products = stored.products || [];
+    state.sourceMeta = stored.sourceMeta || null;
+    state.activeTab = stored.activeTab || 'white_goods';
+    state.targetRevenueCents = Number.isInteger(stored.targetRevenueCents) && stored.targetRevenueCents > 0 ? stored.targetRevenueCents : null;
+    state.preferences = {
+      ...state.preferences,
+      ...(stored.preferences || {}),
+      favorites: Array.isArray(stored.preferences?.favorites) ? stored.preferences.favorites : state.preferences.favorites,
+      trophies: Array.isArray(stored.preferences?.trophies) ? stored.preferences.trophies : state.preferences.trophies,
+      theme: stored.preferences?.theme === 'dark' ? 'dark' : state.preferences.theme
+    };
+  }
+  applyTheme(state.preferences.theme);
+
+  function normalizeText(value) {
+    return String(value ?? '').trim().replace(/\s+/g, ' ');
+  }
+  function normalizeModel(value) {
+    return String(value ?? '').trim().replace(/\s+/g, '').toLocaleUpperCase('tr-TR');
+  }
+  function canonicalize(value) {
+    return normalizeText(value).split('').map(ch => TURKISH_MAP[ch] ?? ch).join('').toUpperCase();
+  }
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+  function formatCurrency(cents) {
+    return new Intl.NumberFormat('tr-TR', {style:'currency', currency:'TRY', minimumFractionDigits:0, maximumFractionDigits:0}).format(cents / 100);
+  }
+  function parsePriceToCents(value) {
+    if (typeof value === 'number' && Number.isFinite(value)) return Math.round(value * 100);
+    if (typeof value !== 'string') return null;
+    let raw = value.trim();
+    if (!raw) return null;
+    raw = raw.replace(/₺/g,'').replace(/\bTL\b/gi,'').replace(/\s/g,'').replace(/[^0-9,.-]/g,'');
+    if (!raw || raw === '-' || raw === '.' || raw === ',') return null;
+    const lastComma = raw.lastIndexOf(',');
+    const lastDot = raw.lastIndexOf('.');
+    const separatorIndex = Math.max(lastComma, lastDot);
+    let normalized = raw;
+    if (lastComma >= 0 && lastDot >= 0) {
+      const decimalSep = lastComma > lastDot ? ',' : '.';
+      const thousandSep = decimalSep === ',' ? '.' : ',';
+      normalized = raw.split(thousandSep).join('').replace(decimalSep,'.');
+    } else if (separatorIndex >= 0) {
+      const digitsAfter = raw.length - separatorIndex - 1;
+      const separator = raw[separatorIndex];
+      if (digitsAfter === 1 || digitsAfter === 2) normalized = raw.replace(separator,'.');
+      else normalized = raw.split(separator).join('');
+    }
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) && parsed >= 0 ? Math.round(parsed * 100) : null;
+  }
+  function looksLikeModel(value) {
+    const text = normalizeText(value);
+    if (!text || text.length < 3 || text.length > 48) return false;
+    const canonical = canonicalize(text);
+    if (HEADER_BLACKLIST.has(canonical)) return false;
+    if (/\s{2,}/.test(text) || text.split(' ').length > 2) return false;
+    if (!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(text)) return false;
+    return /^[A-Za-zÇĞİÖŞÜçğıöşü0-9._/+\- ]+$/.test(text);
+  }
+  function classifyCategoryText(value, builtInContext=false) {
+    const text = canonicalize(value);
+    if (!text) return null;
+    const nextBuiltInContext = builtInContext || text.includes('ANKASTRE');
+    if (text.includes('FIRIN') && nextBuiltInContext) return {type:'built_in', category:'Fırın', builtInContext:nextBuiltInContext};
+    if (text.includes('OCAK') && nextBuiltInContext) return {type:'built_in', category:'Ocak', builtInContext:nextBuiltInContext};
+    if ((text.includes('DAVLUMBAZ') || text.includes('ASPIRATOR')) && nextBuiltInContext) return {type:'built_in', category:'Davlumbaz', builtInContext:nextBuiltInContext};
+    if (nextBuiltInContext && ['BULASIK','SOGUT','BUZDOL','MIKRODALGA','DOMINO','KAHVE'].some(k => text.includes(k))) return {type:'built_in', category:'Diğer', builtInContext:nextBuiltInContext};
+    if (text.includes('KURUTMALI CAMASIR')) return {type:'white_goods', category:'Çamaşır Makinesi', builtInContext:nextBuiltInContext};
+    if (text.includes('CAMASIR MAK')) return {type:'white_goods', category:'Çamaşır Makinesi', builtInContext:nextBuiltInContext};
+    if (text.includes('KURUTMA MAK')) return {type:'white_goods', category:'Kurutma Makinesi', builtInContext:nextBuiltInContext};
+    if (text.includes('BULASIK MAK') && !text.includes('ANKASTRE')) return {type:'white_goods', category:'Bulaşık Makinesi', builtInContext:nextBuiltInContext};
+    if ((text.includes('BUZDOL') || text.includes('SOGUTUCU')) && !text.includes('ANKASTRE')) {
+      if (text.includes('DERIN DONDURUCU') && !text.includes('BUZDOL')) return {type:'white_goods', category:'Diğer', builtInContext:nextBuiltInContext};
+      return {type:'white_goods', category:'Buzdolabı', builtInContext:nextBuiltInContext};
+    }
+    if (text.includes('DERIN DONDURUCU') && !text.includes('ANKASTRE')) return {type:'white_goods', category:'Diğer', builtInContext:nextBuiltInContext};
+    return null;
+  }
+  function isBrandOrListBoundary(value) {
+    const text = canonicalize(value);
+    return ['BOSCH','SIEMENS','PROFILO'].includes(text) || (text.includes('TARIH') && text.includes('FIYAT LISTESI'));
+  }
+  function isUnrelatedSection(value) {
+    const text = canonicalize(value);
+    return UNRELATED_SECTION_TERMS.some(term => text.includes(term));
+  }
+  function rowText(row) {
+    return row.filter(cell => typeof cell === 'string' && cell.trim()).join(' ');
+  }
+  function keywordScore(value, keywords) {
+    const text = canonicalize(value);
+    if (!text) return 0;
+    let score = 0;
+    for (const keyword of keywords) {
+      if (text === keyword) score += 8;
+      else if (text.includes(keyword)) score += keyword.length >= 8 ? 5 : 2;
+    }
+    return score;
+  }
+  function inferColumns(rows) {
+    const maxColumns = Math.min(MAX_COLUMN_SCAN, rows.reduce((max,row) => Math.max(max,row.length),0));
+    if (!maxColumns) return null;
+    const modelScores = Array(maxColumns).fill(0);
+    const priceScores = Array(maxColumns).fill(0);
+    const descriptionScores = Array(maxColumns).fill(0);
+    const categoryScores = Array(maxColumns).fill(0);
+    let bestHeaderRow;
+    let bestHeaderRowScore = 0;
+    rows.slice(0,MAX_HEADER_SCAN_ROWS).forEach((row,rowIndex) => {
+      let rowHeaderScore = 0;
+      for (let col=0; col<maxColumns; col++) {
+        const cell = row[col];
+        const modelHeader = keywordScore(cell, MODEL_HEADERS);
+        const priceHeader = keywordScore(cell, PRICE_HEADERS);
+        const descHeader = keywordScore(cell, DESCRIPTION_HEADERS);
+        const categoryHeader = keywordScore(cell, CATEGORY_HEADERS);
+        const penalty = keywordScore(cell, PENALIZED_PRICE_HEADERS);
+        modelScores[col] += modelHeader;
+        priceScores[col] += Math.max(0, priceHeader - penalty * 2);
+        descriptionScores[col] += descHeader;
+        categoryScores[col] += categoryHeader;
+        rowHeaderScore += modelHeader + priceHeader + descHeader + categoryHeader;
+      }
+      if (rowHeaderScore > bestHeaderRowScore) { bestHeaderRowScore = rowHeaderScore; bestHeaderRow = rowIndex; }
+    });
+    for (let col=0; col<maxColumns; col++) {
+      let modelLike=0, numericPrice=0, longText=0, populated=0;
+      for (const row of rows) {
+        const cell = row[col];
+        if (cell === null || cell === undefined || cell === '') continue;
+        populated++;
+        if (looksLikeModel(cell)) modelLike++;
+        if (parsePriceToCents(cell) !== null) numericPrice++;
+        if (typeof cell === 'string' && normalizeText(cell).length >= 24) longText++;
+      }
+      if (populated) {
+        modelScores[col] += (modelLike/populated)*15 + Math.min(modelLike/20,12);
+        priceScores[col] += (numericPrice/populated)*12 + Math.min(numericPrice/25,12);
+        descriptionScores[col] += (longText/populated)*12 + Math.min(longText/30,8);
+      }
+    }
+    const bestIndex = (scores, excluded=new Set()) => {
+      let index=-1, score=-Infinity;
+      scores.forEach((value,i) => { if (!excluded.has(i) && value > score) { score=value; index=i; } });
+      return index;
+    };
+    const modelColumn = bestIndex(modelScores);
+    const priceColumn = bestIndex(priceScores, new Set([modelColumn]));
+    if (modelColumn < 0 || priceColumn < 0 || modelScores[modelColumn] < 4 || priceScores[priceColumn] < 4) return null;
+    const descCandidate = bestIndex(descriptionScores, new Set([modelColumn,priceColumn]));
+    const categoryCandidate = bestIndex(categoryScores, new Set([modelColumn,priceColumn,descCandidate]));
+    return {
+      modelColumn, priceColumn,
+      descriptionColumn: descCandidate >= 0 && descriptionScores[descCandidate] >= 4 ? descCandidate : undefined,
+      categoryColumn: categoryCandidate >= 0 && categoryScores[categoryCandidate] >= 5 ? categoryCandidate : undefined,
+      headerRow: bestHeaderRowScore >= 5 ? bestHeaderRow : undefined
+    };
+  }
+  function scoreSheet(rows) {
+    const columns = inferColumns(rows);
+    if (!columns) return -1;
+    let likelyProducts=0;
+    for (const row of rows) if (looksLikeModel(row[columns.modelColumn]) && parsePriceToCents(row[columns.priceColumn]) !== null) likelyProducts++;
+    return likelyProducts + Math.min(rows.length/100,20);
+  }
+  function chooseSheet(book) {
+    const preferred = ['HEPSI','TUMU','ALL'];
+    for (const name of book.sheetNames) if (preferred.includes(canonicalize(name))) return {sheetName:name, rows:book.rowsByName[name]};
+    let best=null;
+    for (const name of book.sheetNames) {
+      const rows = book.rowsByName[name] || [];
+      const score = scoreSheet(rows);
+      if (!best || score > best.score) best = {sheetName:name, rows, score};
+    }
+    if (!best || best.score < 1) throw new Error('NO_PRODUCTS');
+    return {sheetName:best.sheetName, rows:best.rows};
+  }
+  function classifyRowFromContext(row, categoryColumn, descriptionColumn, currentType, currentCategory, builtInContext) {
+    if (categoryColumn !== undefined) {
+      const direct = classifyCategoryText(row[categoryColumn], builtInContext);
+      if (direct) return {type:direct.type, category:direct.category};
+    }
+    if (currentType && currentCategory) return {type:currentType, category:currentCategory};
+    const description = descriptionColumn !== undefined ? row[descriptionColumn] : '';
+    const direct = classifyCategoryText(description, builtInContext);
+    if (direct && canonicalize(description).includes('ANKASTRE')) return {type:direct.type, category:direct.category};
+    return null;
+  }
+
+  // Minimal OOXML (.xlsx) reader. It reads workbook/sheet XML directly in the browser.
+  function findEocd(view) {
+    const min = Math.max(0, view.byteLength - 65557);
+    for (let i=view.byteLength-22; i>=min; i--) if (view.getUint32(i,true) === 0x06054b50) return i;
+    return -1;
+  }
+  function readZipEntries(buffer) {
+    const view = new DataView(buffer);
+    const eocd = findEocd(view);
+    if (eocd < 0) throw new Error('READ_FAILED');
+    const entryCount = view.getUint16(eocd+10,true);
+    let ptr = view.getUint32(eocd+16,true);
+    const decoder = new TextDecoder('utf-8');
+    const entries = new Map();
+    for (let n=0; n<entryCount; n++) {
+      if (view.getUint32(ptr,true) !== 0x02014b50) throw new Error('READ_FAILED');
+      const method = view.getUint16(ptr+10,true);
+      const compressedSize = view.getUint32(ptr+20,true);
+      const uncompressedSize = view.getUint32(ptr+24,true);
+      const nameLen = view.getUint16(ptr+28,true);
+      const extraLen = view.getUint16(ptr+30,true);
+      const commentLen = view.getUint16(ptr+32,true);
+      const localOffset = view.getUint32(ptr+42,true);
+      const name = decoder.decode(new Uint8Array(buffer, ptr+46, nameLen));
+      entries.set(name, {method,compressedSize,uncompressedSize,localOffset});
+      ptr += 46 + nameLen + extraLen + commentLen;
+    }
+    return entries;
+  }
+  async function unzipEntry(buffer, entry) {
+    const view = new DataView(buffer);
+    const p = entry.localOffset;
+    if (view.getUint32(p,true) !== 0x04034b50) throw new Error('READ_FAILED');
+    const nameLen = view.getUint16(p+26,true);
+    const extraLen = view.getUint16(p+28,true);
+    const start = p + 30 + nameLen + extraLen;
+    const bytes = new Uint8Array(buffer, start, entry.compressedSize);
+    if (entry.method === 0) return bytes.slice();
+    if (entry.method === 8 && typeof DecompressionStream !== 'undefined') {
+      try {
+        const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+        return new Uint8Array(await new Response(stream).arrayBuffer());
+      } catch (_) {
+        throw new Error('DEFLATE_UNAVAILABLE');
+      }
+    }
+    throw new Error('DEFLATE_UNAVAILABLE');
+  }
+  function normalizeZipPath(base, target) {
+    const parts = (base + '/' + target).split('/');
+    const out=[];
+    for (const p of parts) {
+      if (!p || p === '.') continue;
+      if (p === '..') out.pop(); else out.push(p);
+    }
+    return out.join('/');
+  }
+  async function readXmlEntry(buffer, entries, name) {
+    const entry = entries.get(name);
+    if (!entry) return null;
+    const bytes = await unzipEntry(buffer, entry);
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+  function parseXml(text) {
+    const doc = new DOMParser().parseFromString(text,'application/xml');
+    if (doc.getElementsByTagName('parsererror').length) throw new Error('READ_FAILED');
+    return doc;
+  }
+  function colIndexFromRef(ref) {
+    const letters = String(ref || '').match(/^[A-Z]+/i)?.[0]?.toUpperCase() || 'A';
+    let n=0;
+    for (const ch of letters) n = n*26 + (ch.charCodeAt(0)-64);
+    return n-1;
+  }
+  function allTextNodes(parent, tag='t') {
+    return Array.from(parent.getElementsByTagName(tag)).map(n => n.textContent || '').join('');
+  }
+  async function parseXlsxOffline(file) {
+    const buffer = await file.arrayBuffer();
+    const entries = readZipEntries(buffer);
+    const workbookText = await readXmlEntry(buffer, entries, 'xl/workbook.xml');
+    const relsText = await readXmlEntry(buffer, entries, 'xl/_rels/workbook.xml.rels');
+    if (!workbookText || !relsText) throw new Error('READ_FAILED');
+    const workbook = parseXml(workbookText);
+    const rels = parseXml(relsText);
+    const relMap = new Map();
+    for (const rel of Array.from(rels.getElementsByTagName('Relationship'))) relMap.set(rel.getAttribute('Id'), rel.getAttribute('Target'));
+
+    let sharedStrings=[];
+    const sstText = await readXmlEntry(buffer, entries, 'xl/sharedStrings.xml');
+    if (sstText) {
+      const sst = parseXml(sstText);
+      sharedStrings = Array.from(sst.getElementsByTagName('si')).map(si => allTextNodes(si,'t'));
+    }
+
+    const sheetNames=[];
+    const rowsByName={};
+    const sheets = Array.from(workbook.getElementsByTagName('sheet'));
+    for (const sheet of sheets) {
+      const name = sheet.getAttribute('name') || 'Sheet';
+      const rid = sheet.getAttribute('r:id') || sheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+      const target = relMap.get(rid);
+      if (!target) continue;
+      const path = normalizeZipPath('xl', target);
+      const sheetText = await readXmlEntry(buffer, entries, path);
+      if (!sheetText) continue;
+      const doc = parseXml(sheetText);
+      const rows=[];
+      const rowNodes = Array.from(doc.getElementsByTagName('row'));
+      for (const rowNode of rowNodes) {
+        const rowNumber = Math.max(1, Number(rowNode.getAttribute('r')) || rows.length+1);
+        while (rows.length < rowNumber) rows.push([]);
+        const arr=[];
+        const cells = Array.from(rowNode.getElementsByTagName('c'));
+        for (const cell of cells) {
+          const ref = cell.getAttribute('r') || '';
+          const col = colIndexFromRef(ref);
+          const type = cell.getAttribute('t') || '';
+          let value = null;
+          if (type === 'inlineStr') {
+            const is = cell.getElementsByTagName('is')[0];
+            value = is ? allTextNodes(is,'t') : '';
+          } else {
+            const v = cell.getElementsByTagName('v')[0];
+            const raw = v ? v.textContent : null;
+            if (raw !== null && raw !== undefined) {
+              if (type === 's') value = sharedStrings[Number(raw)] ?? '';
+              else if (type === 'str') value = raw;
+              else if (type === 'b') value = raw === '1';
+              else if (type === 'e') value = raw;
+              else {
+                const num = Number(raw);
+                value = Number.isFinite(num) ? num : raw;
+              }
+            }
+          }
+          arr[col] = value;
+        }
+        rows[rowNumber-1] = arr;
+      }
+      sheetNames.push(name);
+      rowsByName[name]=rows;
+    }
+    if (!sheetNames.length) throw new Error('NO_PRODUCTS');
+    return {sheetNames, rowsByName};
+  }
+  let sheetJsPromise = null;
+  function ensureSheetJS() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    if (sheetJsPromise) return sheetJsPromise;
+    sheetJsPromise = new Promise((resolve,reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+      script.async = true;
+      const timeout = setTimeout(() => { script.remove(); reject(new Error('PARSER_UNAVAILABLE')); }, 9000);
+      script.onload = () => { clearTimeout(timeout); window.XLSX ? resolve(window.XLSX) : reject(new Error('PARSER_UNAVAILABLE')); };
+      script.onerror = () => { clearTimeout(timeout); reject(new Error('PARSER_UNAVAILABLE')); };
+      document.head.appendChild(script);
+    });
+    return sheetJsPromise;
+  }
+  async function parseWithSheetJS(file) {
+    const XLSX = await ensureSheetJS();
+    let workbook;
+    try { workbook = XLSX.read(await file.arrayBuffer(), {type:'array',raw:true,cellDates:false,dense:false}); }
+    catch (_) { throw new Error('READ_FAILED'); }
+    const rowsByName={};
+    for (const name of workbook.SheetNames) rowsByName[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name], {header:1,defval:null,raw:true,blankrows:true});
+    return {sheetNames:workbook.SheetNames.slice(), rowsByName};
+  }
+  async function readWorkbook(file) {
+    const lower = file.name.toLocaleLowerCase('tr-TR');
+    if (lower.endsWith('.xlsx')) {
+      try { return await parseXlsxOffline(file); }
+      catch (error) {
+        if (window.XLSX) return parseWithSheetJS(file);
+        try { return await parseWithSheetJS(file); }
+        catch (_) { throw error instanceof Error ? error : new Error('READ_FAILED'); }
+      }
+    }
+    return parseWithSheetJS(file);
+  }
+
+  async function parseExcelFile(file) {
+    const lower = file.name.toLocaleLowerCase('tr-TR');
+    if (!lower.endsWith('.xlsx') && !lower.endsWith('.xls')) throw new Error('INVALID_EXTENSION');
+    if (file.size === 0) throw new Error('EMPTY_FILE');
+    if (file.size > 25*1024*1024) throw new Error('FILE_TOO_LARGE');
+    let book;
+    try { book = await readWorkbook(file); }
+    catch (error) { throw error instanceof Error ? error : new Error('READ_FAILED'); }
+    const {sheetName, rows} = chooseSheet(book);
+    if (!rows.length) throw new Error('EMPTY_FILE');
+    const columns = inferColumns(rows);
+    if (!columns) throw new Error('COLUMNS_NOT_FOUND');
+
+    const productsByModel = new Map();
+    const sourcePriceByModel = new Map();
+    const conflicts = new Set();
+    let duplicateCount=0, skippedInvalidPriceCount=0, skippedBlankModelCount=0;
+    let currentType=null, currentCategory=null;
+    let builtInContext = canonicalize(sheetName).includes('ANKASTRE');
+
+    rows.forEach((row,rowIndex) => {
+      const rawModel = row[columns.modelColumn];
+      const rawPrice = row[columns.priceColumn];
+      const priceCents = parsePriceToCents(rawPrice);
+      const hasModelishValue = typeof rawModel === 'string' && normalizeText(rawModel).length > 0;
+      const modelLike = looksLikeModel(rawModel);
+      if (modelLike && priceCents !== null) {
+        const context = classifyRowFromContext(row,columns.categoryColumn,columns.descriptionColumn,currentType,currentCategory,builtInContext);
+        if (!context) return;
+        const model = normalizeText(rawModel);
+        const normalizedModel = normalizeModel(model);
+        if (!normalizedModel) { skippedBlankModelCount++; return; }
+        const description = columns.descriptionColumn !== undefined ? normalizeText(row[columns.descriptionColumn]) : undefined;
+        const product = {id:normalizedModel, model, normalizedModel, description:description||undefined, category:context.category, priceCents:context.type==='white_goods'?priceCents:undefined, type:context.type, quantity:0, isFavorite:false, isTrophy:false, sourceIndex:rowIndex};
+        const existing = productsByModel.get(normalizedModel);
+        if (existing) {
+          duplicateCount++;
+          const previous = sourcePriceByModel.get(normalizedModel);
+          if (previous !== priceCents) conflicts.add(model);
+          return;
+        }
+        productsByModel.set(normalizedModel,product);
+        sourcePriceByModel.set(normalizedModel,priceCents);
+        return;
+      }
+      if (hasModelishValue && modelLike && rawPrice !== null && rawPrice !== undefined && rawPrice !== '' && priceCents === null) {
+        if (currentType) skippedInvalidPriceCount++;
+        return;
+      }
+      if (!hasModelishValue && priceCents !== null && currentType) skippedBlankModelCount++;
+      const combined = rowText(row);
+      if (!combined) return;
+      if (isBrandOrListBoundary(combined)) { currentType=null; currentCategory=null; builtInContext=false; return; }
+      if (canonicalize(combined).includes('ANKASTRE')) builtInContext=true;
+      const headerMatch = classifyCategoryText(combined,builtInContext);
+      if (headerMatch) { builtInContext=headerMatch.builtInContext; currentType=headerMatch.type; currentCategory=headerMatch.category; return; }
+      const headerText = canonicalize(combined);
+      if (!builtInContext && ['FIRIN','OCAK','DAVLUMBAZ','ASPIRATOR'].some(term => headerText.includes(term))) { currentType=null; currentCategory=null; return; }
+      if (isUnrelatedSection(combined)) { currentType=null; currentCategory=null; }
+    });
+    if (conflicts.size) throw new Error(`DUPLICATE_CONFLICT:${[...conflicts].slice(0,4).join(', ')}`);
+    const products = [...productsByModel.values()].sort((a,b)=>a.sourceIndex-b.sourceIndex);
+    if (!products.length) throw new Error('NO_PRODUCTS');
+    const warnings=[];
+    if (duplicateCount) warnings.push(`${duplicateCount} tekrar eden model aynı kayda birleştirildi.`);
+    if (skippedInvalidPriceCount) warnings.push(`${skippedInvalidPriceCount} ürün geçersiz fiyat nedeniyle atlandı.`);
+    if (skippedBlankModelCount) warnings.push(`${skippedBlankModelCount} satır model kodu olmadığı için atlandı.`);
+    return {
+      products,
+      meta:{fileName:file.name,sheetName,importedAt:new Date().toISOString(),modelColumn:columns.modelColumn,priceColumn:columns.priceColumn,descriptionColumn:columns.descriptionColumn,categoryColumn:columns.categoryColumn,headerRow:columns.headerRow,totalRows:rows.length,parsedProductCount:products.length,duplicateCount,skippedInvalidPriceCount,skippedBlankModelCount},
+      warnings
+    };
+  }
+  function parseErrorMessage(error) {
+    const code = error instanceof Error ? error.message : '';
+    if (code === 'COLUMNS_NOT_FOUND') return 'Excel dosyasında model ve fiyat sütunları belirlenemedi.';
+    if (code === 'NO_PRODUCTS' || code === 'EMPTY_FILE') return 'Bu dosyada kullanılabilir ürün bulunamadı.';
+    if (code === 'INVALID_EXTENSION') return 'Yalnızca .xlsx veya .xls dosyaları yükleyebilirsiniz.';
+    if (code === 'FILE_TOO_LARGE') return 'Dosya çok büyük. Lütfen 25 MB’den küçük bir fiyat listesi kullanın.';
+    if (code === 'PARSER_UNAVAILABLE') return 'Eski .xls dosyasını okumak için internet bağlantısı gerekir. Dosyayı .xlsx olarak kaydederseniz çevrimdışı da kullanılabilir.';
+    if (code === 'DEFLATE_UNAVAILABLE') return 'Bu tarayıcı Excel dosyasını çevrimdışı açamıyor. Güncel Chrome, Edge veya Safari ile tekrar deneyin.';
+    if (code.startsWith('DUPLICATE_CONFLICT:')) return `Aynı model için farklı fiyat bulundu (${code.split(':')[1]}). Dosyayı kontrol edin.`;
+    return 'Dosya okunamadı. Geçerli bir Excel fiyat listesi yüklediğinizden emin olun.';
+  }
+
+  function loadPreferences() {
+    try {
+      const raw = localStorage.getItem(PREF_KEY);
+      if (!raw) return {favorites:[],trophies:[],theme:'light'};
+      const parsed = JSON.parse(raw);
+      return {favorites:Array.isArray(parsed.favorites)?parsed.favorites:[], trophies:Array.isArray(parsed.trophies)?parsed.trophies:[], theme:parsed.theme==='dark'?'dark':'light'};
+    } catch (_) { return {favorites:[],trophies:[],theme:'light'}; }
+  }
+  function applyTheme(theme) {
+    const resolved = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = resolved;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', resolved === 'dark' ? '#111214' : '#f5f5f7');
+  }
+  function savePreferences() {
+    try { localStorage.setItem(PREF_KEY, JSON.stringify(state.preferences)); } catch (_) {}
+  }
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (![1,2,3].includes(parsed?.version) || !Array.isArray(parsed.products)) return null;
+      return parsed;
+    } catch (_) { return null; }
+  }
+  function statePayload() {
+    return {
+      version: 3,
+      products: state.products,
+      sourceMeta: state.sourceMeta,
+      preferences: state.preferences,
+      activeTab: state.activeTab,
+      targetRevenueCents: state.targetRevenueCents
+    };
+  }
+  function persistLocal() {
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(statePayload())); } catch (_) {}
+  }
+  function applyStoredState(storedState) {
+    if (!storedState || !Array.isArray(storedState.products)) return;
+    state.products = storedState.products || [];
+    state.sourceMeta = storedState.sourceMeta || null;
+    state.activeTab = storedState.activeTab || 'white_goods';
+    state.targetRevenueCents = Number.isInteger(storedState.targetRevenueCents) && storedState.targetRevenueCents > 0 ? storedState.targetRevenueCents : null;
+    state.preferences = {
+      ...state.preferences,
+      ...(storedState.preferences || {}),
+      favorites: Array.isArray(storedState.preferences?.favorites) ? storedState.preferences.favorites : state.preferences.favorites,
+      trophies: Array.isArray(storedState.preferences?.trophies) ? storedState.preferences.trophies : state.preferences.trophies,
+      theme: storedState.preferences?.theme === 'dark' ? 'dark' : 'light'
+    };
+    applyTheme(state.preferences.theme);
+    savePreferences();
+    persistLocal();
+  }
+  function updateSyncUi(status, text) {
+    const el = document.getElementById('sync-status');
+    if (!el) return;
+    el.dataset.status = status;
+    el.textContent = text || 'Yerel';
+  }
+  async function parseApiResponse(response) {
+    let data = {};
+    try { data = await response.json(); } catch (_) {}
+    if (response.status === 401) {
+      isAuthenticated = false;
+      remoteReady = false;
+      renderLogin('Oturum süresi doldu. Lütfen tekrar giriş yapın.');
+      throw new Error('UNAUTHORIZED');
+    }
+    return data;
+  }
+  async function saveRemoteState() {
+    if(!window.ST_DB) return;
+    try {
+      updateSyncUi('syncing','Buluta kaydediliyor');
+      await window.ST_DB.collection('appStates').doc('main').set({
+        state: statePayload(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      remoteReady=true;
+      updateSyncUi('synced','Bulut');
+    } catch(e) {
+      console.error(e);
+      updateSyncUi('error','Bulut hata');
+    }
+  }
+  function persistNow() {
+    persistLocal();
+    savePreferences();
+    void saveRemoteState();
+  }
+  function schedulePersist() {
+    persistLocal();
+    savePreferences();
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(persistNow,220);
+  }
+  window.addEventListener('pagehide',()=>{persistLocal();savePreferences();});
+  window.addEventListener('online',()=>{ if(isAuthenticated){ remoteReady=true; void saveRemoteState(); } });
+  window.addEventListener('offline',()=>updateSyncUi('offline'));
+
+
+  function mergeImportedProducts(products) {
+    const previousByModel = new Map(state.products.map(p => [p.normalizedModel, p]));
+    const favorites = new Set(state.preferences.favorites.map(normalizeModel));
+    const trophies = new Set(state.preferences.trophies.map(normalizeModel));
+    const importedModels = new Set(products.map(p => p.normalizedModel));
+    const merged = products.map(p => {
+      const previous = previousByModel.get(p.normalizedModel);
+      return {
+        ...p,
+        quantity: previous?.quantity || 0,
+        isFavorite: favorites.has(p.normalizedModel),
+        isTrophy: p.type === 'white_goods' && trophies.has(p.normalizedModel)
+      };
+    });
+    const retainedSoldProducts = state.products
+      .filter(p => p.quantity > 0 && !importedModels.has(p.normalizedModel))
+      .map((p,index) => ({
+        ...p,
+        sourceIndex: products.length + index,
+        isFavorite: favorites.has(p.normalizedModel),
+        isTrophy: p.type === 'white_goods' && trophies.has(p.normalizedModel)
+      }));
+    return {products:[...merged,...retainedSoldProducts],retainedMissingCount:retainedSoldProducts.length};
+  }
+  function setPreference(kind, normalizedModel, enabled) {
+    const set = new Set((state.preferences[kind] || []).map(normalizeModel));
+    enabled ? set.add(normalizedModel) : set.delete(normalizedModel);
+    state.preferences[kind] = [...set];
+    savePreferences();
+  }
+  function setNotice(text, isError=false) {
+    state.notice = isError ? '' : text;
+    state.error = isError ? text : '';
+    const box = document.getElementById('notice-area');
+    if (box) box.innerHTML = text ? `<div class="notice${isError?' notice-error':''}" role="${isError?'alert':'status'}">${escapeHtml(text)}</div>` : '';
+    clearTimeout(noticeTimer);
+    if (text && !isError) noticeTimer = setTimeout(() => { state.notice=''; if (box) box.innerHTML=''; },4200);
+  }
+
+  async function importFile(file) {
+    if (!file) return;
+    state.isLoading=true;
+    updateLoadingUi();
+    setNotice('');
+    try {
+      const result = await parseExcelFile(file);
+      const merged = mergeImportedProducts(result.products);
+      state.products = merged.products;
+      state.sourceMeta = result.meta;
+      state.activeTab = state.products.some(p=>p.type==='white_goods') ? 'white_goods' : 'built_in';
+      state.query='';
+      persistNow();
+      renderApplication();
+      const importNotices = [...result.warnings];
+      if (merged.retainedMissingCount) importNotices.push(`${merged.retainedMissingCount} satışlı model yeni listede bulunmadığı için eski fiyatıyla korunuyor.`);
+      if (importNotices.length) setNotice(importNotices.join(' '));
+    } catch (error) {
+      const msg = parseErrorMessage(error);
+      if (state.sourceMeta && state.products.length) setNotice(msg,true);
+      else { state.error=msg; renderUploader(); }
+    } finally {
+      state.isLoading=false;
+      updateLoadingUi();
+    }
+  }
+  function updateLoadingUi() {
+    document.querySelectorAll('[data-upload-button]').forEach(btn => { btn.disabled=state.isLoading; btn.textContent=state.isLoading?'Dosya Okunuyor…':'Excel Dosyası Yükle'; });
+  }
+
+  function renderUploader() {
+    app.innerHTML = `
+      <main class="upload-shell">
+        <section class="upload-card" aria-labelledby="upload-title">
+          <div class="brand-mark" aria-hidden="true">ST</div>
+          <div class="upload-copy">
+            <p class="eyebrow">SATIŞ TAKİP</p>
+            <h1 id="upload-title">Satışa başlamak için fiyat listenizi yükleyin.</h1>
+            <p>Excel dosyası cihazınızda okunur. Ayrıştırılan ürün, fiyat, satış adedi ve işaretleme kayıtları uygulamanın Cloudflare D1 veritabanında saklanır ve diğer cihazlarınıza senkronize edilir.</p>
+          </div>
+          <div class="drop-zone" id="drop-zone">
+            <div class="drop-icon">${icons.upload}</div>
+            <div><strong>Excel fiyat listenizi seçin</strong><span>.xlsx ve .xls desteklenir</span></div>
+            <button class="primary-button" type="button" data-upload-button>${state.isLoading?'Dosya Okunuyor…':'Excel Dosyası Yükle'}</button>
+            <input id="initial-file" class="sr-only" type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+          </div>
+          ${state.error?`<p class="form-error" role="alert">${escapeHtml(state.error)}</p>`:''}
+        </section>
+      </main>`;
+    const input = document.getElementById('initial-file');
+    const drop = document.getElementById('drop-zone');
+    document.querySelector('[data-upload-button]').addEventListener('click',()=>input.click());
+    input.addEventListener('change',e=>{ const f=e.target.files?.[0]; if(f) importFile(f); e.target.value=''; });
+    ['dragenter','dragover'].forEach(name=>drop.addEventListener(name,e=>{e.preventDefault();drop.classList.add('is-dragging');}));
+    ['dragleave','drop'].forEach(name=>drop.addEventListener(name,e=>{e.preventDefault();drop.classList.remove('is-dragging');}));
+    drop.addEventListener('drop',e=>{ const f=e.dataTransfer?.files?.[0]; if(f) importFile(f); });
+  }
+
+  function currentWhiteGoodsRevenue() {
+    return state.products.reduce((s,p)=>s+(p.type==='white_goods'?(p.priceCents||0)*p.quantity:0),0);
+  }
+  function formatTargetPercent(revenue, target) {
+    if (!Number.isInteger(target) || target <= 0) return '—';
+    const percent = (revenue / target) * 100;
+    const digits = Math.abs(percent - Math.round(percent)) < 0.05 ? 0 : 1;
+    return `%${percent.toLocaleString('tr-TR',{minimumFractionDigits:digits,maximumFractionDigits:digits})}`;
+  }
+  function filteredProductsForActiveTab() {
+    const base = state.products.filter(p=>p.type===state.activeTab&&matchesSearch(p));
+    const favoritesOnly = !!state.listFilters?.favorites;
+    const trophiesOnly = !!state.listFilters?.trophies;
+    if (!favoritesOnly && !trophiesOnly) return base;
+    return base.filter(product => (favoritesOnly && product.isFavorite) || (trophiesOnly && product.isTrophy));
+  }
+  function visibleProductsCountLabel(count) {
+    return `${count.toLocaleString('tr-TR')} model`;
+  }
+  function summaryHtml() {
+    if (state.activeTab === 'built_in') {
+      const count = state.products.reduce((s,p)=>s+(p.type==='built_in'?p.quantity:0),0);
+      return `<section class="summary-grid summary-grid-single" aria-label="Satış özeti"><div class="summary-item"><div class="summary-card"><span class="summary-label">Toplam Satış</span><strong id="built-count" class="summary-value">${count.toLocaleString('tr-TR')} <small>Adet</small></strong></div></div></section>`;
+    }
+    const revenue = currentWhiteGoodsRevenue();
+    const trophies = state.products.reduce((s,p)=>s+(p.type==='white_goods'&&p.isTrophy?p.quantity:0),0);
+    const targetPercent = formatTargetPercent(revenue,state.targetRevenueCents);
+    const targetMeta = state.targetRevenueCents ? `Hedef: ${escapeHtml(formatCurrency(state.targetRevenueCents))}` : 'Hedef belirlemek için dokunun';
+    return `<section class="summary-grid" aria-label="Satış özeti"><button type="button" class="summary-item summary-action" data-summary-action="revenue" aria-label="Güncel ciro satış detaylarını aç"><div class="summary-card"><span class="summary-label">Güncel Ciro</span><strong id="revenue" class="summary-value summary-money">${escapeHtml(formatCurrency(revenue))}</strong></div></button><button type="button" class="summary-item summary-action" data-summary-action="target" aria-label="Satış hedefini düzenle"><div class="summary-card"><span class="summary-label">Hedef Gerçekleştirme</span><strong id="target-percent" class="summary-value summary-target-value">${escapeHtml(targetPercent)}</strong><span class="summary-meta">${targetMeta}</span></div></button><button type="button" class="summary-item summary-action" data-summary-action="trophy" aria-label="Kupa ürün satış detaylarını aç"><div class="summary-card"><span class="summary-label">Kupa Ürün Satışı</span><strong id="trophy-count" class="summary-value">${trophies.toLocaleString('tr-TR')} <small>Adet</small></strong></div></button></section>`;
+  }
+  function navHtml() {
+    return `<nav class="bottom-nav" aria-label="Ürün grubu"><div class="bottom-nav-inner"><button type="button" data-tab="white_goods" class="${state.activeTab==='white_goods'?'is-active':''}" ${state.activeTab==='white_goods'?'aria-current="page"':''}>${icons.fridge}<span>Beyaz Eşya</span></button><button type="button" data-tab="built_in" class="${state.activeTab==='built_in'?'is-active':''}" ${state.activeTab==='built_in'?'aria-current="page"':''}>${icons.oven}<span>Ankastre</span></button></div></nav>`;
+  }
+  function renderApplication() {
+    app.innerHTML = `<div class="app-shell">
+      <div class="sticky-top"><div class="content-width">
+        <header class="app-header"><div class="header-brand"><button id="settings-button" class="brand-menu-button" type="button" aria-label="Ayarları aç" aria-haspopup="dialog">ST</button><div><strong>Satış Takip</strong><span title="${escapeHtml(state.sourceMeta.fileName)}">${escapeHtml(state.sourceMeta.fileName)}</span></div></div><div class="header-actions"><span id="sync-status" class="sync-pill" data-status="${navigator.onLine?'synced':'offline'}">${navigator.onLine?'İnternetsiz Yerel':'Çevrimdışı'}</span><button id="replace-list" class="text-button" type="button">Listeyi Değiştir</button></div></header>
+        <div id="summary-area">${summaryHtml()}</div>
+        <label class="search-bar">${icons.search}<span class="sr-only">Model ara</span><input id="search-input" type="search" value="${escapeHtml(state.query)}" placeholder="Model ara" autocomplete="off" spellcheck="false"><button type="button" id="search-clear" class="search-clear${state.query?'':' is-hidden'}" aria-label="Aramayı temizle">×</button></label>
+      </div></div>
+      <main class="content-width main-content"><div id="notice-area"></div><div id="sections"></div></main>
+      <div id="nav-area">${navHtml()}</div>
+      <input id="replace-file" class="sr-only" type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+      <div id="settings-root"></div>
+      <div id="dialog-root"></div>
+    </div>`;
+    bindAppEvents();
+    renderSections();
+  }
+  function bindAppEvents() {
+    const search = document.getElementById('search-input');
+    const clear = document.getElementById('search-clear');
+    search.addEventListener('input',e=>{ state.query=e.target.value; clear.classList.toggle('is-hidden',!state.query); renderSections(); });
+    clear.addEventListener('click',()=>{ state.query=''; search.value=''; clear.classList.add('is-hidden'); search.focus(); renderSections(); });
+    document.getElementById('settings-button').addEventListener('click',showSettingsMenu);
+    document.getElementById('replace-list').addEventListener('click',()=>document.getElementById('replace-file').click());
+    const replace = document.getElementById('replace-file');
+    replace.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)importFile(f);e.target.value='';});
+    document.getElementById('nav-area').addEventListener('click',e=>{
+      const btn=e.target.closest('[data-tab]'); if(!btn)return;
+      state.activeTab=btn.dataset.tab; state.query=''; schedulePersist();
+      document.getElementById('summary-area').innerHTML=summaryHtml();
+      document.getElementById('nav-area').innerHTML=navHtml();
+      document.getElementById('search-input').value=''; document.getElementById('search-clear').classList.add('is-hidden');
+      renderSections();
+    });
+    document.getElementById('sections').addEventListener('click',handleSectionClick);
+    document.getElementById('summary-area').addEventListener('click',e=>{
+      const btn=e.target.closest('[data-summary-action]'); if(!btn)return;
+      if(btn.dataset.summaryAction==='target') showTargetDialog();
+      else if(btn.dataset.summaryAction==='revenue') showSalesDetailDialog('revenue');
+      else if(btn.dataset.summaryAction==='trophy') showSalesDetailDialog('trophy');
+    });
+  }
+  function showTargetDialog() {
+    const root=document.getElementById('dialog-root');
+    const revenue=currentWhiteGoodsRevenue();
+    const currentTarget=state.targetRevenueCents;
+    const initialValue=currentTarget?String(Math.round(currentTarget/100)):'';
+    root.innerHTML=`<div class="dialog-backdrop" id="dialog-backdrop" role="presentation"><section class="target-dialog" role="dialog" aria-modal="true" aria-labelledby="target-title"><h2 id="target-title">Satış Hedefi</h2><p>Bu ay için hedef satış tutarını girin. Hedef gerçekleştirme yüzdesi güncel ciroya göre otomatik hesaplanır.</p><label class="target-field"><span>Hedef satış tutarı</span><div class="target-input-wrap"><input id="target-input" class="target-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Örn. 1.500.000" value="${escapeHtml(initialValue)}"><span class="target-currency">₺</span></div></label><p class="target-current">Güncel ciro: <strong>${escapeHtml(formatCurrency(revenue))}</strong>${currentTarget?` · Mevcut hedef: <strong>${escapeHtml(formatCurrency(currentTarget))}</strong>`:''}</p><div class="dialog-actions"><button id="target-cancel" class="secondary-button" type="button">İptal</button><button id="target-save" class="primary-button" type="button">Kaydet</button></div></section></div>`;
+    const close=()=>{root.innerHTML='';document.removeEventListener('keydown',key);};
+    const key=e=>{if(e.key==='Escape')close();};
+    document.addEventListener('keydown',key);
+    document.getElementById('target-cancel').addEventListener('click',close);
+    document.getElementById('dialog-backdrop').addEventListener('mousedown',e=>{if(e.target===e.currentTarget)close();});
+    document.getElementById('target-save').addEventListener('click',()=>{
+      const input=document.getElementById('target-input');
+      const raw=String(input.value||'').trim();
+      if(!raw){state.targetRevenueCents=null;schedulePersist();updateSummary();close();setNotice('Satış hedefi kaldırıldı.');return;}
+      const cents=parsePriceToCents(raw);
+      if(!Number.isInteger(cents)||cents<=0){input.focus();input.select();return;}
+      state.targetRevenueCents=cents;
+      schedulePersist();updateSummary();close();setNotice(`Satış hedefi ${formatCurrency(cents)} olarak kaydedildi.`);
+    });
+    const input=document.getElementById('target-input');input.focus();input.select();
+  }
+  function salesDetailItems(kind) {
+    return state.products.filter(p=>p.type==='white_goods'&&p.quantity>0&&(kind!=='trophy'||p.isTrophy));
+  }
+  function sortSalesDetailItems(items, sortKey) {
+    const list=items.slice();
+    if(sortKey==='name') list.sort((a,b)=>String(a.model||'').localeCompare(String(b.model||''),'tr',{sensitivity:'base',numeric:true}));
+    else if(sortKey==='quantity') list.sort((a,b)=>b.quantity-a.quantity||String(a.model||'').localeCompare(String(b.model||''),'tr',{numeric:true}));
+    else list.sort((a,b)=>((b.priceCents||0)*b.quantity)-((a.priceCents||0)*a.quantity)||b.quantity-a.quantity);
+    return list;
+  }
+  function showSalesDetailDialog(kind) {
+    const root=document.getElementById('dialog-root');
+    const isTrophy=kind==='trophy';
+    let sortKey=isTrophy?'quantity':'revenue';
+    const title=isTrophy?'Kupa Ürün Satışları':'Güncel Ciro Detayı';
+    const sortLabels={name:'İsme göre',quantity:'Satış adedine göre',revenue:'Toplam ciroya göre'};
+    root.innerHTML=`<div class="dialog-backdrop" id="dialog-backdrop" role="presentation"><section class="detail-dialog" role="dialog" aria-modal="true" aria-labelledby="detail-title"><header class="detail-dialog-header"><div><h2 id="detail-title">${title}</h2><p>${isTrophy?'Bu ay satılan kupa işaretli ürünler.':'Bu ay ciroya dahil olan satılmış ürünler.'}</p></div><button id="detail-close" class="detail-close" type="button" aria-label="Kapat">×</button></header><div class="detail-toolbar"><span id="detail-total" class="detail-total"></span><button id="sort-button" class="sort-button" type="button" aria-haspopup="true" aria-expanded="false"></button><div id="sort-menu" class="sort-menu" hidden></div></div><div id="sales-detail-list" class="sales-detail-list"></div></section></div>`;
+    const close=()=>{root.innerHTML='';document.removeEventListener('keydown',key);};
+    const key=e=>{if(e.key==='Escape')close();};
+    document.addEventListener('keydown',key);
+    document.getElementById('detail-close').addEventListener('click',close);
+    document.getElementById('dialog-backdrop').addEventListener('mousedown',e=>{if(e.target===e.currentTarget)close();});
+    const menu=document.getElementById('sort-menu');
+    const button=document.getElementById('sort-button');
+    const options=isTrophy?['name','quantity']:['name','quantity','revenue'];
+    const render=()=>{
+      const items=sortSalesDetailItems(salesDetailItems(kind),sortKey);
+      const qty=items.reduce((sum,p)=>sum+p.quantity,0);
+      const revenue=items.reduce((sum,p)=>sum+(p.priceCents||0)*p.quantity,0);
+      document.getElementById('detail-total').textContent=isTrophy?`${qty.toLocaleString('tr-TR')} adet kupa ürünü`:`${qty.toLocaleString('tr-TR')} adet · ${formatCurrency(revenue)}`;
+      button.textContent=`Sırala: ${sortLabels[sortKey]}`;
+      menu.innerHTML=options.map(key=>`<button type="button" data-sort="${key}" class="${key===sortKey?'is-active':''}">${sortLabels[key]}</button>`).join('');
+      const list=document.getElementById('sales-detail-list');
+      if(!items.length){list.innerHTML=`<div class="detail-empty">${isTrophy?'Bu ay satılmış kupa ürünü bulunmuyor.':'Bu ay henüz satılmış ürün bulunmuyor.'}</div>`;return;}
+      list.innerHTML=items.map(p=>{
+        const total=(p.priceCents||0)*p.quantity;
+        return `<div class="sales-detail-row"><div class="sales-detail-product"><strong>${escapeHtml(p.model)}</strong><span>${escapeHtml(p.description||p.category||'')}</span></div><div class="sales-detail-values"><strong>${p.quantity.toLocaleString('tr-TR')} adet</strong>${isTrophy?'':`<span>${escapeHtml(formatCurrency(total))}</span>`}</div></div>`;
+      }).join('');
+    };
+    button.addEventListener('click',()=>{const opening=menu.hidden;menu.hidden=!opening;button.setAttribute('aria-expanded',String(opening));});
+    menu.addEventListener('click',e=>{const choice=e.target.closest('[data-sort]');if(!choice)return;sortKey=choice.dataset.sort;menu.hidden=true;button.setAttribute('aria-expanded','false');render();});
+    render();
+    document.getElementById('detail-close').focus();
+  }
+  function showSettingsMenu() {
+    const root=document.getElementById('settings-root');
+    const theme=state.preferences.theme==='dark'?'dark':'light';
+    root.innerHTML=`<div class="settings-backdrop" id="settings-backdrop"><section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-header"><h2 id="settings-title">Ayarlar</h2><button id="settings-close" class="settings-close" type="button" aria-label="Ayarları kapat">×</button></div><div class="settings-section"><span class="settings-label">Tema</span><div class="theme-grid"><button type="button" class="theme-choice${theme==='light'?' is-active':''}" data-theme-choice="light" aria-pressed="${theme==='light'}"><span class="theme-preview theme-preview-light" aria-hidden="true"></span><strong>Açık Tema</strong></button><button type="button" class="theme-choice${theme==='dark'?' is-active':''}" data-theme-choice="dark" aria-pressed="${theme==='dark'}"><span class="theme-preview theme-preview-dark" aria-hidden="true"></span><strong>Koyu Tema</strong></button></div></div><div class="settings-section"><button id="new-month" class="settings-primary" type="button">Yeni Aya Geç</button><div class="settings-danger-grid"><button id="clear-stars" class="settings-secondary" type="button">Yıldızları Temizle</button><button id="clear-trophies" class="settings-secondary" type="button">Kupaları Temizle</button></div><p class="settings-note">Satışlar, fiyatlar, yıldızlar ve kupalar Cloudflare D1 üzerinde senkronize edilir. Yeni aya geçerken kapanan ay ayrıca arşivlenir.</p><button id="logout-button" class="settings-logout" type="button">Bu Cihazda Çıkış Yap</button></div></section></div>`;
+    const close=()=>{root.innerHTML='';document.getElementById('settings-button')?.focus();document.removeEventListener('keydown',key);};
+    const key=e=>{if(e.key==='Escape')close();};
+    document.addEventListener('keydown',key);
+    document.getElementById('settings-close').addEventListener('click',close);
+    document.getElementById('settings-backdrop').addEventListener('mousedown',e=>{if(e.target===e.currentTarget)close();});
+    root.querySelectorAll('[data-theme-choice]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.preferences.theme=btn.dataset.themeChoice==='dark'?'dark':'light';
+      applyTheme(state.preferences.theme); savePreferences(); schedulePersist();
+      root.querySelectorAll('[data-theme-choice]').forEach(choice=>{const active=choice.dataset.themeChoice===state.preferences.theme;choice.classList.toggle('is-active',active);choice.setAttribute('aria-pressed',String(active));});
+    }));
+    document.getElementById('new-month').addEventListener('click',()=>showConfirmDialog({
+      title:'Yeni aya geçilsin mi?',
+      description:'Bu ayki satış adetleri ve ciro sıfırlanacak. Yıldız ve kupa işaretleri korunacak; fiyatlar yeni Excel yüklenene kadar mevcut listeden devam edecek.',
+      confirmLabel:'Onayla',
+      onConfirm:async()=>{
+        const monthLabel=new Intl.DateTimeFormat('tr-TR',{month:'long',year:'numeric'}).format(new Date());
+        updateSyncUi('syncing','Ay arşivleniyor');
+        try {
+          const response=await fetch('/api/new-month',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({state:statePayload(),revision:remoteRevision,monthLabel})});
+          const data=await parseApiResponse(response);
+          if(response.status===409){remoteRevision=Number(data.revision)||0;if(data.state)applyStoredState(data.state);close();if(state.sourceMeta&&state.products.length)renderApplication();else renderUploader();setNotice('Başka cihazdan yeni kayıt geldi. Bulut verisi yenilendi; yeni aya geç işlemini tekrar onaylayın.',true);return;}
+          if(!response.ok)throw new Error(data.error||'NEW_MONTH_FAILED');
+          remoteRevision=Number(data.revision)||remoteRevision;
+          if(data.state)applyStoredState(data.state);
+          close();renderApplication();updateSyncUi('synced');setNotice(`${monthLabel} arşivlendi. Yeni ayın satış adetleri ve cirosu sıfırlandı.`);
+        } catch(error) {
+          if(error?.message!=='UNAUTHORIZED'){updateSyncUi(navigator.onLine?'error':'offline');setNotice('Yeni aya geçilemedi. İnternet bağlantısını ve bulut senkronunu kontrol edin.',true);}
+        }
+      }
+    }));
+    document.getElementById('clear-stars').addEventListener('click',()=>showConfirmDialog({
+      title:'Yıldızlar temizlensin mi?',
+      description:'Yıldız olarak seçilmiş tüm ürünlerin yıldız işareti kaldırılacak.',
+      confirmLabel:'Onayla',
+      onConfirm:()=>{state.preferences.favorites=[];state.products.forEach(p=>p.isFavorite=false);savePreferences();persistNow();close();renderSections();setNotice('Tüm yıldız işaretleri temizlendi.');}
+    }));
+    document.getElementById('clear-trophies').addEventListener('click',()=>showConfirmDialog({
+      title:'Kupalar temizlensin mi?',
+      description:'Kupa olarak işaretlenmiş tüm ürünlerin kupa işareti kaldırılacak.',
+      confirmLabel:'Onayla',
+      onConfirm:()=>{state.preferences.trophies=[];state.products.forEach(p=>p.isTrophy=false);savePreferences();persistNow();close();renderSections();updateSummary();setNotice('Tüm kupa işaretleri temizlendi.');}
+    }));
+    document.getElementById('logout-button').addEventListener('click',async()=>{
+      try { await fetch('/api/logout',{method:'POST'}); } catch (_) {}
+      isAuthenticated=false;remoteReady=false;remoteRevision=0;close();renderLogin('Bu cihazdaki oturum kapatıldı.');
+    });
+    document.getElementById('settings-close').focus();
+  }
+  function showConfirmDialog({title,description,confirmLabel='Onayla',onConfirm}) {
+    const root=document.getElementById('dialog-root');
+    root.innerHTML=`<div class="dialog-backdrop" id="dialog-backdrop" role="presentation"><section class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-description"><h2 id="confirm-title">${escapeHtml(title)}</h2><p id="confirm-description">${escapeHtml(description)}</p><div class="dialog-actions"><button id="dialog-cancel" class="secondary-button" type="button">İptal</button><button id="dialog-confirm" class="primary-button" type="button">${escapeHtml(confirmLabel)}</button></div></section></div>`;
+    const close=()=>{root.innerHTML='';document.removeEventListener('keydown',key);};
+    const key=e=>{if(e.key==='Escape')close();};
+    document.addEventListener('keydown',key);
+    document.getElementById('dialog-cancel').addEventListener('click',close);
+    document.getElementById('dialog-confirm').addEventListener('click',async()=>{
+      const confirm=document.getElementById('dialog-confirm');
+      confirm.disabled=true;
+      const original=confirm.textContent;
+      confirm.textContent='İşleniyor…';
+      try { await onConfirm?.(); close(); } catch (_) { confirm.disabled=false; confirm.textContent=original; }
+    });
+    document.getElementById('dialog-backdrop').addEventListener('mousedown',e=>{if(e.target===e.currentTarget)close();});
+    document.getElementById('dialog-cancel').focus();
+  }
+  function matchesSearch(product) {
+    const query=state.query.trim().toLocaleLowerCase('tr-TR');
+    if(!query)return true;
+    return [product.model,product.name,product.description].filter(Boolean).some(v=>String(v).toLocaleLowerCase('tr-TR').includes(query));
+  }
+  function productRowHtml(p) {
+    return `<div class="product-row" data-id="${escapeHtml(p.id)}"><div class="product-actions"><button class="icon-button${p.isFavorite?' is-active':''}" type="button" data-action="favorite" aria-pressed="${p.isFavorite}" aria-label="${escapeHtml(p.model)} modelini ${p.isFavorite?'yıldızdan çıkar':'yıldızla'}">${icons.star(p.isFavorite)}</button>${p.type==='white_goods'?`<button class="icon-button${p.isTrophy?' is-active':''}" type="button" data-action="trophy" aria-pressed="${p.isTrophy}" aria-label="${escapeHtml(p.model)} modelini ${p.isTrophy?'kupa ürünlerinden çıkar':'kupa ürünü olarak işaretle'}">${icons.trophy(p.isTrophy)}</button>`:''}</div><div class="product-main"><div class="product-title-line"><strong class="product-model">${escapeHtml(p.model)}</strong>${p.priceCents!==undefined?`<span class="product-price">${escapeHtml(formatCurrency(p.priceCents))}</span>`:''}</div>${p.description?`<p class="product-description">${escapeHtml(p.description)}</p>`:''}</div><div class="quantity-control" aria-label="${escapeHtml(p.model)} satış adedi ${p.quantity}"><button type="button" class="quantity-button quantity-minus" data-action="decrease" ${p.quantity===0?'disabled':''} aria-label="${escapeHtml(p.model)} satış adedini azalt">−</button><output class="quantity-value" aria-live="polite">${p.quantity}</output><button type="button" class="quantity-button quantity-plus" data-action="increase" aria-label="${escapeHtml(p.model)} satış adedini artır">+</button></div></div>`;
+  }
+  function categoryBlockHtml(title, products, prefix) {
+    if(!products.length)return '';
+    const safeId=(prefix+'-'+title).replace(/[^a-zA-Z0-9_-]/g,'-');
+    return `<section class="category-section" aria-labelledby="${safeId}"><header class="category-header"><h3 id="${safeId}">${escapeHtml(title)}</h3><span>${products.length.toLocaleString('tr-TR')} model</span></header><div class="product-table">${products.map(productRowHtml).join('')}</div></section>`;
+  }
+  function renderSections() {
+    const root=document.getElementById('sections'); if(!root)return;
+    const baseVisible=state.products.filter(p=>p.type===state.activeTab&&matchesSearch(p));
+    const visible=filteredProductsForActiveTab();
+    const order=state.activeTab==='white_goods'?WHITE_ORDER:BUILT_ORDER;
+    const groups=(items,prefix)=>order.map(cat=>categoryBlockHtml(cat,items.filter(p=>p.category===cat),prefix)).join('');
+    const allActive=!state.listFilters?.favorites&&!state.listFilters?.trophies;
+    let emptyMessage='';
+    if(!baseVisible.length) emptyMessage='Bu aramayla eşleşen model bulunamadı.';
+    else if(!visible.length) emptyMessage='Seçili filtrelerle eşleşen ürün bulunamadı.';
+    root.innerHTML=`<div class="sections-stack"><section class="list-group" aria-labelledby="products-toolbar-label"><div class="section-kicker-row"><div class="section-heading"><h2 id="products-toolbar-label" class="sr-only">Ürün filtreleri</h2><div class="filter-chip-row" role="toolbar" aria-labelledby="products-toolbar-label"><button type="button" class="filter-chip${allActive?' is-active':''}" data-filter-toggle="all" aria-pressed="${allActive}">Tüm Ürünler</button><button type="button" class="filter-chip${state.listFilters?.favorites?' is-active':''}" data-filter-toggle="favorites" aria-pressed="${!!state.listFilters?.favorites}">Yıldızlar</button><button type="button" class="filter-chip${state.listFilters?.trophies?' is-active':''}" data-filter-toggle="trophies" aria-pressed="${!!state.listFilters?.trophies}">Kupalar</button></div></div><span>${visibleProductsCountLabel(visible.length)}</span></div>${emptyMessage?`<div class="empty-inline">${emptyMessage}</div>`:groups(visible,'all')}</section></div>`;
+  }
+  function handleSectionClick(e) {
+    const filterBtn=e.target.closest('[data-filter-toggle]');
+    if(filterBtn){
+      const key=filterBtn.dataset.filterToggle;
+      if(key==='all') state.listFilters={favorites:false,trophies:false};
+      else if(key==='favorites') state.listFilters={...state.listFilters,favorites:!state.listFilters.favorites};
+      else if(key==='trophies') state.listFilters={...state.listFilters,trophies:!state.listFilters.trophies};
+      renderSections();
+      return;
+    }
+    const btn=e.target.closest('button[data-action]'); if(!btn)return;
+    const row=btn.closest('.product-row'); if(!row)return;
+    const product=state.products.find(p=>p.id===row.dataset.id); if(!product)return;
+    const action=btn.dataset.action;
+    if(action==='increase'||action==='decrease') {
+      const delta=action==='increase'?1:-1;
+      product.quantity=Math.max(0,product.quantity+delta);
+      updateQuantityRows(product);
+      updateSummary(); schedulePersist();
+      return;
+    }
+    if(action==='favorite') {
+      product.isFavorite=!product.isFavorite;
+      setPreference('favorites',product.normalizedModel,product.isFavorite);
+      renderSections(); schedulePersist(); return;
+    }
+    if(action==='trophy' && product.type==='white_goods') {
+      product.isTrophy=!product.isTrophy;
+      setPreference('trophies',product.normalizedModel,product.isTrophy);
+      renderSections(); updateSummary(); schedulePersist();
+    }
+  }
+  function updateQuantityRows(product) {
+    document.querySelectorAll(`.product-row[data-id="${CSS.escape(product.id)}"]`).forEach(row=>{
+      const value=row.querySelector('.quantity-value'); if(value)value.textContent=product.quantity;
+      const minus=row.querySelector('.quantity-minus'); if(minus)minus.disabled=product.quantity===0;
+      const ctl=row.querySelector('.quantity-control'); if(ctl)ctl.setAttribute('aria-label',`${product.model} satış adedi ${product.quantity}`);
+    });
+  }
+  function updateSummary() {
+    const area=document.getElementById('summary-area'); if(area) area.innerHTML=summaryHtml();
+  }
+
+  function renderBoot() {
+    app.innerHTML='<main class="boot-shell"><div>Yerel kayıtlar yükleniyor…</div></main>';
+  }
+  function renderLogin(message='') {
+    app.innerHTML=`<main class="login-shell"><section class="login-card" aria-labelledby="login-title"><div class="brand-mark" aria-hidden="true">ST</div><h1 id="login-title">Satış Takip</h1><p>Satış kayıtlarınıza erişmek için Cloudflare yayınında belirlediğiniz parolayı girin.</p><form id="login-form" class="login-form"><label><span class="sr-only">Parola</span><input id="login-password" class="login-input" type="password" autocomplete="current-password" placeholder="Parola" required></label><button id="login-submit" class="primary-button" type="submit">Giriş Yap</button>${message?`<p class="login-error" role="alert">${escapeHtml(message)}</p>`:''}</form></section></main>`;
+    const form=document.getElementById('login-form');
+    const password=document.getElementById('login-password');
+    form.addEventListener('submit',async(e)=>{
+      e.preventDefault();
+      const submit=document.getElementById('login-submit');
+      submit.disabled=true;submit.textContent='Giriş Yapılıyor…';
+      try {
+        const response=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:password.value})});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok)throw new Error(data.error||'Giriş başarısız.');
+        isAuthenticated=true;remoteReady=true;await loadCloudState();
+      } catch(error) {
+        renderLogin(error?.message||'Giriş başarısız.');
+      }
+    });
+    password.focus();
+  }
+  async function loadCloudState() {
+    renderBoot();
+    try {
+      if(!window.ST_DB) throw new Error('Firebase yok');
+      const snap = await window.ST_DB.collection('appStates').doc('main').get();
+      remoteReady=true;
+      if(snap.exists && snap.data().state) {
+        applyStoredState(snap.data().state);
+      }
+      if(state.sourceMeta&&state.products.length)renderApplication();else renderUploader();
+      updateSyncUi('synced','Bulut');
+    } catch(error) {
+      remoteReady=false;
+      if(stored) {
+        applyStoredState(stored);
+        if(state.sourceMeta&&state.products.length)renderApplication();else renderUploader();
+        updateSyncUi('offline','Yerel');
+      } else {
+        renderUploader();
+      }
+    }
+  }
+  async function boot() {
+    renderBoot();
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).catch(()=>{});
+    if(stored) applyStoredState(stored);
+    if(state.sourceMeta && state.products.length) renderApplication(); else renderUploader();
+    updateSyncUi('syncing','Bulut bağlanıyor');
+    void loadCloudState();
+  }
+  void boot();
+})();
+</script>
+</body>
+</html>

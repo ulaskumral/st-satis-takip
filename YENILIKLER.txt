@@ -1,0 +1,9 @@
+ST SATIŞ TAKİP - v7
+
+- v6'daki ERR_TOO_MANY_REDIRECTS sorunu düzeltildi.
+- Kök URL artık /index.html adresine Worker içinde yeniden yazılmıyor.
+- Cloudflare Pages statik asset çözümlemesi doğrudan kullanılıyor.
+- HTML/JS/manifest güvenlik ve MIME başlıkları korunuyor.
+- Service Worker önbelleği v7 olarak yenilendi.
+- Sade dashboard kartları ve Yıldızlar/Kupalar filtreleri korunuyor.
+- Cloudflare D1 satış verilerine dokunulmaz.
